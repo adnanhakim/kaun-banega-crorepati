@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Add Question</title>
+        <link rel="stylesheet" type="text/css" href="/styles/addquestion.css" />
+        <!-- Google Fonts -->
+        <link
+            href="https://fonts.googleapis.com/css?family=Montserrat|Poppins|Raleway&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div class="form">
+            <div id="header">Add a Question</div>
+
+            <ul id="form-messages"></ul>
+
+            <label for="question">Question: </label>
+            <input type="text" id="question" />
+
+            <label for="option1">Option 1: </label>
+            <input type="text" id="option1" />
+
+            <label for="option2">Option 2: </label>
+            <input type="text" id="option2" />
+
+            <label for="option3">Option 3: </label>
+            <input type="text" id="option3" />
+
+            <label for="option4">Option 4: </label>
+            <input type="text" id="option4" />
+
+            <label for="answer">Answer: </label>
+            <input type="text" id="answer" />
+
+            <label for="slot">Slot: </label>
+            <select name="price" id="price">
+                <option value="1000">1000</option>
+                <option value="2000">2000</option>
+                <option value="3000">3000</option>
+                <option value="5000">5000</option>
+                <option value="10000">10000</option>
+                <option value="20000">20000</option>
+                <option value="40000">40000</option>
+                <option value="80000">80000</option>
+                <option value="160000">160000</option>
+                <option value="320000">320000</option>
+                <option value="640000">640000</option>
+                <option value="1250000">1250000</option>
+                <option value="2500000">2500000</option>
+                <option value="5000000">5000000</option>
+                <option value="10000000">10000000</option>
+                <option value="70000000">70000000</option>
+            </select>
+
+            <ul id="status"></ul>
+
+            <button type="submit" id="btn-submit">Add Question</button>
+        </div>
+
+        <script src="/js/addquestion.js"></script>
+    </body>
+</html>
