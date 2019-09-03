@@ -1,5 +1,7 @@
 # Kaun Banega Crorepati
 
+## Created using Node.js and MongoDB
+
 ## Libraries Used
 
 -   Node.js
