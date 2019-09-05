@@ -16,7 +16,7 @@
                 background-color: rgb(32, 35, 48);
             }
 
-            #audience-poll-dialog {
+            .dialog {
                 position: absolute;
                 top: 50%;
                 left: 50%;
@@ -29,7 +29,15 @@
                 border-radius: 0px 20px 0px 20px;
             }
 
-            #audience-poll-close {
+            #ask-the-expert-p {
+                font-family: 'Poppins';
+                font-size: 18px;
+                color: #ffffff;
+                text-align: center;
+                margin: 10px 0px;
+            }
+
+            .dialog-close {
                 width: 100%;
                 margin: 10px 0px;
                 padding: 5px 0px;
@@ -47,118 +55,56 @@
         </style>
     </head>
     <body>
-        <div id="audience-poll-dialog">
-            <canvas id="chart"></canvas>
-            <button id="audience-poll-close">Close</button>
+        <div class="dialog" id="ask-the-expert-dialog">
+            <p id="ask-the-expert-p"></p>
+            <button class="dialog-close" id="ask-the-expert-close">
+                Close
+            </button>
         </div>
 
-        <button id="audience-poll">Click</button>
+        <button id="ask-the-expert">Ask the expert</button>
 
         <script>
-            function createChart(option1, option2, option3, option4) {
-                Chart.defaults.global.defaultFontFamily = 'Poppins';
-                Chart.defaults.global.defaultFontSize = 14;
-                Chart.defaults.global.defaultFontColor = '#fff';
-
-                const ctx = document.getElementById('chart').getContext('2d');
-                ctx.fillStyle = 'white';
-                var gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(240,176,0,1)');
-                gradient.addColorStop(0.5, 'rgba(224,209,70,1)');
-                gradient.addColorStop(1, 'rgba(240,176,0,1)');
-                const chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['A', 'B', 'C', 'D'],
-                        datasets: [
-                            {
-                                label: 'Percentage',
-                                data: [option1, option2, option3, option4],
-                                backgroundColor: gradient
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        title: {
-                            display: true,
-                            text: 'Audience Poll',
-                            fontSize: 18
-                        },
-                        legend: {
-                            display: false
-                        },
-                        gridLines: {
-                            color: '#fff'
-                        },
-                        scales: {
-                            yAxes: [
-                                {
-                                    gridLines: {
-                                        display: false
-                                    },
-                                    ticks: {
-                                        min: 0,
-                                        max: 100,
-                                        stepSize: 20
-                                    }
-                                }
-                            ],
-                            xAxes: [
-                                {
-                                    categorySpacing: 0.5,
-                                    barPercentage: 0.5,
-                                    gridLines: {
-                                        display: false
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                });
-            }
-
-            const button = document.getElementById('audience-poll');
+            const button = document.getElementById('ask-the-expert');
             button.addEventListener('click', () => {
-                const dialog = document.getElementById('audience-poll-dialog');
+                const dialog = document.getElementById('ask-the-expert-dialog');
                 dialog.style.display = 'block';
 
-                const audiencePollRequest = new XMLHttpRequest();
-                audiencePollRequest.onload = () => {
+                const askTheExpertRequest = new XMLHttpRequest();
+                askTheExpertRequest.onload = () => {
                     let responseObject = null;
 
                     try {
                         responseObject = JSON.parse(
-                            audiencePollRequest.responseText
+                            askTheExpertRequest.responseText
                         );
                     } catch (err) {
                         console.log('Could not parse JSON!');
                     }
 
                     if (responseObject) {
-                        if (audiencePollRequest.status == 200) {
-                            createChart(
-                                responseObject.option1,
-                                responseObject.option2,
-                                responseObject.option3,
-                                responseObject.option4
+                        if (askTheExpertRequest.status == 200) {
+                            console.log(responseObject);
+                            const text = document.getElementById(
+                                'ask-the-expert-p'
                             );
+                            text.innerHTML = `Expert thinks the answer is ${responseObject.answer}`;
                         } else {
                             console.log('Error');
                         }
                     }
                 };
-                audiencePollRequest.open(
+                askTheExpertRequest.open(
                     'get',
-                    'http://localhost:3000/api/lifelines/audiencepoll/5d6e88234ca2d356b40f2a36',
+                    'http://localhost:3000/api/lifelines/asktheexpert/5d6e88234ca2d356b40f2a36',
                     true
                 );
-                audiencePollRequest.send();
+                askTheExpertRequest.send();
             });
 
-            const btnClose = document.getElementById('audience-poll-close');
+            const btnClose = document.getElementById('ask-the-expert-close');
             btnClose.addEventListener('click', () => {
-                const dialog = document.getElementById('audience-poll-dialog');
+                const dialog = document.getElementById('ask-the-expert-dialog');
                 dialog.style.display = 'none';
             });
         </script>

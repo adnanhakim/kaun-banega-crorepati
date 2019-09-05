@@ -78,7 +78,12 @@ router.get('/lifelines/audiencepoll/:questionId', async (req, res) => {
         else if (question.slot <= 320000)
             options = audiencePoll(question.answer - 1, 30);
         else options = audiencePoll(question.answer - 1, 10);
-        const data = bind(options[0], options[1], options[2], options[3]);
+        const data = {
+            option1: options[0],
+            option2: options[1],
+            option3: options[2],
+            option4: options[3]
+        };
         res.status(200).json(data);
     } catch (err) {
         console.log(err);
@@ -121,15 +126,27 @@ function audiencePoll(answer, value) {
     return options;
 }
 
-function bind(op1, op2, op3, op4) {
-    const data = {
-        option1: op1,
-        option2: op2,
-        option3: op3,
-        option4: op4
-    };
-    return data;
-}
+router.get('/lifelines/fiftyfifty/:questionId', async (req, res) => {
+    try {
+        const question = await Question.findById(req.params.questionId);
+        let randomOption1 = Math.floor(Math.random() * 4) + 1;
+        while (randomOption1 == question.answer)
+            randomOption1 = Math.floor(Math.random() * 4) + 1;
+        let randomOption2 = Math.floor(Math.random() * 4) + 1;
+        while (
+            randomOption2 == question.answer ||
+            randomOption2 == randomOption1
+        )
+            randomOption2 = Math.floor(Math.random() * 4) + 1;
+        res.status(200).json({
+            remove1: randomOption1,
+            remove2: randomOption2
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err });
+    }
+});
 
 router.get('/lifelines/asktheexpert/:questionId', async (req, res) => {
     try {
@@ -137,11 +154,11 @@ router.get('/lifelines/asktheexpert/:questionId', async (req, res) => {
         const random = Math.floor(Math.random() * 100);
         if (random > 20) {
             // Return correct answer
-            res.status(200).json({ expert: question.answer });
+            res.status(200).json({ answer: question.answer });
         } else {
             // Return any random answer -> Maybe correct or incorrect
             const randomAnswer = Math.floor(Math.random() * 4) + 1;
-            res.status(200).json({ expert: randomAnswer });
+            res.status(200).json({ answer: randomAnswer });
         }
     } catch (err) {
         console.log(err);

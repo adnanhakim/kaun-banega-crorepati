@@ -8,7 +8,11 @@ const container = {
     option4: document.getElementById('option4')
 };
 
-let questionId = 0;
+let questionId = 0,
+    option1 = '',
+    option2 = '',
+    option3 = '',
+    option4 = '';
 
 const request = new XMLHttpRequest();
 
@@ -32,14 +36,19 @@ function handleResponse(responseObject, status) {
     console.log(status);
     if (status == 200) {
         questionId = responseObject[0]._id;
+        option1 = responseObject[0].option1;
+        option2 = responseObject[0].option2;
+        option3 = responseObject[0].option3;
+        option4 = responseObject[0].option4;
         container.question.innerHTML = responseObject[0].question;
         setTimeout(() => {
-            container.option1.innerHTML = `<input type="radio" name="answer" id="1" value="1" /><span class="option-color" id="option-color1">A:&nbsp;</span> ${responseObject[0].option1} <span class="checked"></span>`;
-            container.option2.innerHTML = `<input type="radio" name="answer" id="2" value="2" /><span class="option-color" id="option-color2">B:&nbsp;</span> ${responseObject[0].option2} <span class="checked"></span>`;
-            container.option3.innerHTML = `<input type="radio" name="answer" id="3" value="3" /><span class="option-color" id="option-color3">C:&nbsp;</span> ${responseObject[0].option3} <span class="checked"></span>`;
-            container.option4.innerHTML = `<input type="radio" name="answer" id="4" value="4" /><span class="option-color" id="option-color4">D:&nbsp;</span> ${responseObject[0].option4} <span class="checked"></span>`;
+            container.option1.innerHTML = `<input type="radio" name="answer" id="1" value="1" /><span class="option-color" id="option-color1">A:&nbsp;</span> ${option1} <span class="checked"></span>`;
+            container.option2.innerHTML = `<input type="radio" name="answer" id="2" value="2" /><span class="option-color" id="option-color2">B:&nbsp;</span> ${option2} <span class="checked"></span>`;
+            container.option3.innerHTML = `<input type="radio" name="answer" id="3" value="3" /><span class="option-color" id="option-color3">C:&nbsp;</span> ${option3} <span class="checked"></span>`;
+            container.option4.innerHTML = `<input type="radio" name="answer" id="4" value="4" /><span class="option-color" id="option-color4">D:&nbsp;</span> ${option4} <span class="checked"></span>`;
         }, 5000);
     } else {
+        // TODO Error if network issue
         console.log('Error');
     }
 }
@@ -143,7 +152,6 @@ audiencePoll.addEventListener('click', () => {
     if (div.classList.contains('unused')) {
         // Use the lifeline
         const dialog = document.getElementById('audience-poll-dialog');
-        dialog.style.display = 'block';
 
         const audiencePollRequest = new XMLHttpRequest();
         audiencePollRequest.onload = () => {
@@ -180,6 +188,8 @@ audiencePoll.addEventListener('click', () => {
             const dialog = document.getElementById('audience-poll-dialog');
             dialog.style.display = 'none';
         });
+
+        dialog.style.display = 'block';
 
         div.classList.remove('unused');
     } else {
@@ -251,8 +261,44 @@ function createChart(option1, option2, option3, option4) {
 }
 
 fiftyFifty.addEventListener('click', () => {
-    if (fiftyFifty.classList.contains('unused')) {
+    const div = document.getElementById('50-50-div');
+    if (div.classList.contains('unused')) {
         // Use the lifeline
+        const fiftyFiftyRequest = new XMLHttpRequest();
+        fiftyFiftyRequest.onload = () => {
+            let responseObject = null;
+
+            try {
+                responseObject = JSON.parse(fiftyFiftyRequest.responseText);
+            } catch (err) {
+                console.log('Could not parse JSON!');
+            }
+
+            if (responseObject) {
+                if (fiftyFiftyRequest.status == 200) {
+                    console.log(responseObject);
+                    // Remove two incorrect answers
+                    const incorrectAnswer1 = document.getElementById(
+                        `option${responseObject.remove1}`
+                    );
+                    incorrectAnswer1.innerHTML = '';
+                    const incorrectAnswer2 = document.getElementById(
+                        `option${responseObject.remove2}`
+                    );
+                    incorrectAnswer2.innerHTML = '';
+                } else {
+                    console.log('Error');
+                }
+            }
+        };
+        fiftyFiftyRequest.open(
+            'get',
+            `http://localhost:3000/api/lifelines/fiftyfifty/${questionId}`,
+            true
+        );
+        fiftyFiftyRequest.send();
+
+        div.classList.remove('unused');
     } else {
         console.log('Already used');
     }
@@ -266,9 +312,52 @@ flipTheQuestion.addEventListener('click', () => {
     }
 });
 
+// Ask the expert
 askTheExpert.addEventListener('click', () => {
-    if (askTheExpert.classList.contains('unused')) {
+    const div = document.getElementById('ask-the-expert-div');
+    if (div.classList.contains('unused')) {
         // Use the lifeline
+        const dialog = document.getElementById('ask-the-expert-dialog');
+
+        const askTheExpertRequest = new XMLHttpRequest();
+        askTheExpertRequest.onload = () => {
+            let responseObject = null;
+
+            try {
+                responseObject = JSON.parse(askTheExpertRequest.responseText);
+            } catch (err) {
+                console.log('Could not parse JSON!');
+            }
+
+            if (responseObject) {
+                if (askTheExpertRequest.status == 200) {
+                    console.log(responseObject);
+                    const text = document.getElementById('ask-the-expert-p');
+                    const answerLabelText = document.getElementById(
+                        `option${responseObject.answer}`
+                    ).textContent;
+                    text.innerHTML = `Expert thinks the answer is ${answerLabelText}`;
+                } else {
+                    console.log('Error');
+                }
+            }
+        };
+        askTheExpertRequest.open(
+            'get',
+            `http://localhost:3000/api/lifelines/asktheexpert/${questionId}`,
+            true
+        );
+        askTheExpertRequest.send();
+
+        const btnClose = document.getElementById('ask-the-expert-close');
+        btnClose.addEventListener('click', () => {
+            const dialog = document.getElementById('ask-the-expert-dialog');
+            dialog.style.display = 'none';
+        });
+
+        dialog.style.display = 'block';
+
+        div.classList.remove('unused');
     } else {
         console.log('Already used');
     }

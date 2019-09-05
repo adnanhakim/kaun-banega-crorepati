@@ -42,12 +42,25 @@
                     <span class="checked"></span>
                 </label>
             </div>
-            <button id="lock-button">Lock</button>
+            <div class="buttons">
+                <button id="lock-button">Lock</button>
+                <button id="quit-button">Quit</button>
+            </div>
 
             <!-- Audience Poll Dialog -->
-            <div id="audience-poll-dialog">
+            <div class="dialog" id="audience-poll-dialog">
                 <canvas id="chart"></canvas>
-                <button id="audience-poll-close">Close</button>
+                <button class="dialog-close" id="audience-poll-close">
+                    Close
+                </button>
+            </div>
+
+            <!-- Ask the Expert Dialog -->
+            <div class="dialog" id="ask-the-expert-dialog">
+                <p id="ask-the-expert-p"></p>
+                <button class="dialog-close" id="ask-the-expert-close">
+                    Close
+                </button>
             </div>
         </main>
         <aside>

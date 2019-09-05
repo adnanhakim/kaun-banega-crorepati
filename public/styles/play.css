@@ -90,6 +90,12 @@ form {
     opacity: 0.4;
 }
 
+.buttons {
+    display: grid;
+    grid-template-columns: 49.5% 49.5%;
+    grid-column-gap: 1%;
+}
+
 #lock-button {
     background: linear-gradient(
         90deg,
@@ -98,16 +104,37 @@ form {
         rgba(240, 176, 0, 1) 100%
     );
     padding: 15px 20px;
-    width: 49.5%;
+    width: 100%;
     border-style: none;
     margin-top: 30px;
     border-radius: 0px 10px 0px 10px;
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#quit-button {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(242, 105, 105, 1) 50%,
+        rgba(255, 1, 1, 1) 100%
+    );
+    padding: 15px 20px;
+    width: 100%;
+    border-style: none;
+    margin-top: 30px;
+    border-radius: 0px 10px 0px 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 /* Audience Poll Dialog */
-#audience-poll-dialog {
+
+.dialog {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -120,7 +147,15 @@ form {
     border-radius: 0px 20px 0px 20px;
 }
 
-#audience-poll-close {
+#ask-the-expert-p {
+    font-family: 'Poppins';
+    font-size: 18px;
+    color: #ffffff;
+    text-align: center;
+    margin: 10px 0px;
+}
+
+.dialog-close {
     width: 100%;
     margin: 10px 0px;
     padding: 5px 0px;
@@ -159,6 +194,7 @@ aside {
     border-radius: 50%;
     background-color: transparent;
     cursor: pointer;
+    outline: none;
 }
 
 .lifeline h3 {
