@@ -1,0 +1,26 @@
+body {
+    background-color: #390f4e;
+}
+
+#logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: fill-anim 0.5s ease forwards 5s;
+}
+
+@keyframes line-anim {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fill-anim {
+    from {
+        fill: transparent;
+    }
+    to {
+        fill: white;
+    }
+}

@@ -26,8 +26,16 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/templates/index.html');
 });
 
+app.get('/play', (req, res) => {
+    res.sendFile(__dirname + '/templates/play.html');
+});
+
 app.get('/api/question', (req, res) => {
     res.sendFile(__dirname + '/templates/addquestion.html');
+});
+
+app.get('/chart', (req, res) => {
+    res.sendFile(__dirname + '/templates/temp.html');
 });
 
 // Connect to db

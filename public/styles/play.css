@@ -1,0 +1,250 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+}
+
+main {
+    width: 70%;
+    padding: 2%;
+    background-color: rgb(236, 236, 236);
+    position: relative;
+}
+
+form {
+    background: red;
+    width: 100%;
+}
+
+#question {
+    position: relative;
+    background-color: #390f4e;
+    color: #ffffff;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 10px;
+    border-radius: 0px 20px 0px 20px;
+}
+
+.answer-container {
+    display: grid;
+    grid-template-columns: 49.5% 49.5%;
+    grid-column-gap: 1%;
+}
+
+.option-color {
+    color: #f0d245;
+    font-weight: bold;
+}
+
+.answer {
+    position: relative;
+    background-color: #390f4e;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 0px 10px 0px 10px;
+}
+
+/* Hide the browser's default radio button */
+.answer-container label input {
+    display: none;
+}
+
+/* .answer:hover {
+    background-color: #f0d245;
+    color: rgb(42, 42, 42);
+} */
+
+.checked {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0px 10px 0px 10px;
+}
+
+.checked:after {
+    content: '';
+    position: absolute;
+    display: none;
+}
+
+/* When the radio button is checked, add a blue background */
+.answer-container input:checked ~ .checked {
+    background-size: 100%;
+    border: 1px solid;
+    background-color: #f0d245;
+    opacity: 0.4;
+}
+
+#lock-button {
+    background: linear-gradient(
+        90deg,
+        rgba(240, 176, 0, 1) 0%,
+        rgba(224, 209, 70, 1) 50%,
+        rgba(240, 176, 0, 1) 100%
+    );
+    padding: 15px 20px;
+    width: 49.5%;
+    border-style: none;
+    margin-top: 30px;
+    border-radius: 0px 10px 0px 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+}
+
+/* Audience Poll Dialog */
+#audience-poll-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    display: none;
+    border: 2px solid #f0d245;
+    padding: 20px;
+    background: #390f4e;
+    border-radius: 0px 20px 0px 20px;
+}
+
+#audience-poll-close {
+    width: 100%;
+    margin: 10px 0px;
+    padding: 5px 0px;
+    background: linear-gradient(
+        90deg,
+        rgba(240, 176, 0, 1) 0%,
+        rgba(224, 209, 70, 1) 50%,
+        rgba(240, 176, 0, 1) 100%
+    );
+    border-style: none;
+    border-radius: 0px 10px 0px 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+}
+
+aside {
+    border-left: 3px solid #f0d245;
+    background-color: #390f4e;
+    width: 30%;
+}
+
+.lifelines {
+    padding: 20px 10px;
+    width: 100%;
+    height: 15%;
+    display: flex;
+    align-content: center;
+    justify-content: space-evenly;
+}
+
+.lifeline {
+    position: relative;
+    width: 15%;
+    height: 80%;
+    border: 2px solid #f0d245;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.lifeline h3 {
+    color: #f0d245;
+    font-family: 'Poppins', sans-serif;
+}
+
+.lifeline img {
+    width: 60%;
+}
+
+.button {
+    background: red;
+}
+
+.cross {
+    position: relative;
+    background: beige;
+    top: 0%;
+}
+
+.unused {
+    display: none;
+}
+
+.used {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.line1 {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 100%;
+    height: 2px;
+    background-color: red;
+    transform: rotate(135deg);
+}
+
+.line2 {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 100%;
+    height: 2px;
+    background-color: red;
+    transform: rotate(45deg);
+}
+
+.price-table {
+    font-family: Verdana, Tahoma, sans-serif;
+    padding: 0px 40px;
+}
+
+.price-table-no {
+    letter-spacing: 1px;
+    text-align: end;
+    width: auto;
+    color: #f0d245;
+    padding: 5px 30px 5px 10px;
+}
+
+.reached {
+    width: 1px;
+    height: 1px;
+}
+
+.price-table-data {
+    letter-spacing: 1px;
+    width: auto;
+    color: #f0d245;
+    padding: 5px 30px;
+}
+
+.checkpoint {
+    color: rgb(236, 236, 236);
+}
+
+.locked {
+    opacity: 0.6;
+}
+
+.unlocked {
+    opacity: 1;
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Chart</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+        <!-- Google Fonts -->
+        <link
+            href="https://fonts.googleapis.com/css?family=Montserrat|Poppins&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                background-color: rgb(32, 35, 48);
+            }
+
+            #audience-poll-dialog {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 500px;
+                display: none;
+                border: 2px solid #f0d245;
+                padding: 20px;
+                background: #390f4e;
+                border-radius: 0px 20px 0px 20px;
+            }
+
+            #audience-poll-close {
+                width: 100%;
+                margin: 10px 0px;
+                padding: 5px 0px;
+                background: linear-gradient(
+                    90deg,
+                    rgba(240, 176, 0, 1) 0%,
+                    rgba(224, 209, 70, 1) 50%,
+                    rgba(240, 176, 0, 1) 100%
+                );
+                border-style: none;
+                border-radius: 0px 10px 0px 10px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="audience-poll-dialog">
+            <canvas id="chart"></canvas>
+            <button id="audience-poll-close">Close</button>
+        </div>
+
+        <button id="audience-poll">Click</button>
+
+        <script>
+            function createChart(option1, option2, option3, option4) {
+                Chart.defaults.global.defaultFontFamily = 'Poppins';
+                Chart.defaults.global.defaultFontSize = 14;
+                Chart.defaults.global.defaultFontColor = '#fff';
+
+                const ctx = document.getElementById('chart').getContext('2d');
+                ctx.fillStyle = 'white';
+                var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(240,176,0,1)');
+                gradient.addColorStop(0.5, 'rgba(224,209,70,1)');
+                gradient.addColorStop(1, 'rgba(240,176,0,1)');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['A', 'B', 'C', 'D'],
+                        datasets: [
+                            {
+                                label: 'Percentage',
+                                data: [option1, option2, option3, option4],
+                                backgroundColor: gradient
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: true,
+                            text: 'Audience Poll',
+                            fontSize: 18
+                        },
+                        legend: {
+                            display: false
+                        },
+                        gridLines: {
+                            color: '#fff'
+                        },
+                        scales: {
+                            yAxes: [
+                                {
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        min: 0,
+                                        max: 100,
+                                        stepSize: 20
+                                    }
+                                }
+                            ],
+                            xAxes: [
+                                {
+                                    categorySpacing: 0.5,
+                                    barPercentage: 0.5,
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                });
+            }
+
+            const button = document.getElementById('audience-poll');
+            button.addEventListener('click', () => {
+                const dialog = document.getElementById('audience-poll-dialog');
+                dialog.style.display = 'block';
+
+                const audiencePollRequest = new XMLHttpRequest();
+                audiencePollRequest.onload = () => {
+                    let responseObject = null;
+
+                    try {
+                        responseObject = JSON.parse(
+                            audiencePollRequest.responseText
+                        );
+                    } catch (err) {
+                        console.log('Could not parse JSON!');
+                    }
+
+                    if (responseObject) {
+                        if (audiencePollRequest.status == 200) {
+                            createChart(
+                                responseObject.option1,
+                                responseObject.option2,
+                                responseObject.option3,
+                                responseObject.option4
+                            );
+                        } else {
+                            console.log('Error');
+                        }
+                    }
+                };
+                audiencePollRequest.open(
+                    'get',
+                    'http://localhost:3000/api/lifelines/audiencepoll/5d6e88234ca2d356b40f2a36',
+                    true
+                );
+                audiencePollRequest.send();
+            });
+
+            const btnClose = document.getElementById('audience-poll-close');
+            btnClose.addEventListener('click', () => {
+                const dialog = document.getElementById('audience-poll-dialog');
+                dialog.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>
