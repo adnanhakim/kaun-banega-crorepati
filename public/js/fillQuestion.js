@@ -8,53 +8,83 @@ const container = {
     option4: document.getElementById('option4')
 };
 
+const flipMessage = document.getElementById('flip-the-question-message');
+
 let questionId = 0,
     option1 = '',
     option2 = '',
     option3 = '',
-    option4 = '';
+    option4 = '',
+    slot = 0,
+    isFlip = false;
 
-const request = new XMLHttpRequest();
-
-request.onload = () => {
-    let responseObject = null;
-
-    try {
-        responseObject = JSON.parse(request.responseText);
-    } catch (err) {
-        console.log('Could not parse JSON!');
-    }
-
-    if (responseObject) handleResponse(responseObject, request.status);
-};
-
-request.open('get', 'http://localhost:3000/api/question/640000', true);
-request.send();
-
-function handleResponse(responseObject, status) {
-    console.log(responseObject);
-    console.log(status);
-    if (status == 200) {
-        questionId = responseObject[0]._id;
-        option1 = responseObject[0].option1;
-        option2 = responseObject[0].option2;
-        option3 = responseObject[0].option3;
-        option4 = responseObject[0].option4;
-        container.question.innerHTML = responseObject[0].question;
-        setTimeout(() => {
-            container.option1.innerHTML = `<input type="radio" name="answer" id="1" value="1" /><span class="option-color" id="option-color1">A:&nbsp;</span> ${option1} <span class="checked"></span>`;
-            container.option2.innerHTML = `<input type="radio" name="answer" id="2" value="2" /><span class="option-color" id="option-color2">B:&nbsp;</span> ${option2} <span class="checked"></span>`;
-            container.option3.innerHTML = `<input type="radio" name="answer" id="3" value="3" /><span class="option-color" id="option-color3">C:&nbsp;</span> ${option3} <span class="checked"></span>`;
-            container.option4.innerHTML = `<input type="radio" name="answer" id="4" value="4" /><span class="option-color" id="option-color4">D:&nbsp;</span> ${option4} <span class="checked"></span>`;
-        }, 5000);
-    } else {
-        // TODO Error if network issue
-        console.log('Error');
-    }
-}
+// TODO Get the slot
+slot = 640000;
 
 const lock = document.getElementById('lock-button');
 console.log(lock);
+
+function getQuestion(slot) {
+    lock.disabled = false;
+
+    const questionRequest = new XMLHttpRequest();
+
+    questionRequest.onload = () => {
+        let responseObject = null;
+
+        try {
+            responseObject = JSON.parse(questionRequest.responseText);
+        } catch (err) {
+            console.log('Could not parse JSON!');
+        }
+
+        if (responseObject) {
+            console.log(responseObject);
+            console.log(questionRequest.status);
+            if (questionRequest.status == 200) {
+                questionId = responseObject[0]._id;
+                console.log(`questionid: ${questionId}`);
+                console.log(`id: ${responseObject[0]._id}`);
+
+                option1 = responseObject[0].option1;
+                option2 = responseObject[0].option2;
+                option3 = responseObject[0].option3;
+                option4 = responseObject[0].option4;
+                container.question.innerHTML = responseObject[0].question;
+                setTimeout(() => {
+                    container.option1.innerHTML = `<input type="radio" name="answer" id="1" value="1" /><span class="option-color" id="option-color1">A:&nbsp;</span> ${option1} <span class="checked"></span>`;
+                    container.option2.innerHTML = `<input type="radio" name="answer" id="2" value="2" /><span class="option-color" id="option-color2">B:&nbsp;</span> ${option2} <span class="checked"></span>`;
+                    container.option3.innerHTML = `<input type="radio" name="answer" id="3" value="3" /><span class="option-color" id="option-color3">C:&nbsp;</span> ${option3} <span class="checked"></span>`;
+                    container.option4.innerHTML = `<input type="radio" name="answer" id="4" value="4" /><span class="option-color" id="option-color4">D:&nbsp;</span> ${option4} <span class="checked"></span>`;
+                }, 5000);
+            } else {
+                // TODO Error if network issue
+                console.log('Error');
+            }
+        }
+    };
+
+    if (isFlip) {
+        console.log('Entered else');
+        questionRequest.open(
+            'get',
+            `http://localhost:3000/api/lifelines/flipthequestion/${questionId}/${slot}`,
+            true
+        );
+    } else {
+        console.log('Entered if');
+        questionRequest.open(
+            'get',
+            `http://localhost:3000/api/question/${slot}`,
+            true
+        );
+    }
+    questionRequest.send();
+}
+
+// Get the Question
+getQuestion(slot);
+
 lock.addEventListener('click', () => {
     // Gets the selected input radio button
     const selectedAnswer = Array.from(
@@ -84,11 +114,12 @@ lock.addEventListener('click', () => {
     console.log(selectedAnswer[0].parentNode);
     console.log(selectedAnswer[0].value);
 
-    checkAnswer(selectedAnswer[0].value);
+    checkAnswer(selectedAnswer[0].value, isFlip);
+
     lock.disabled = true;
 });
 
-function checkAnswer(selectedAnswer) {
+function checkAnswer(selectedAnswer, isFlip) {
     const checkRequest = new XMLHttpRequest();
 
     checkRequest.onload = () => {
@@ -115,6 +146,11 @@ function checkAnswer(selectedAnswer) {
                             `option-color${selectedAnswer}`
                         );
                         optionColorSpan.style.color = '#f0d245';
+                        defaultColor(
+                            selectedAnswerLabel,
+                            optionColorSpan,
+                            null
+                        );
                     } else {
                         console.log('Incorrect answer!');
                         selectedAnswerLabel.style.background =
@@ -125,6 +161,13 @@ function checkAnswer(selectedAnswer) {
                         correctAnswerLabel.style.background =
                             'linear-gradient(90deg, rgba(47,132,4,1) 0%, rgba(87,212,8,1) 50%, rgba(47,132,4,1) 100%)';
                         correctAnswerLabel.style.color = '#ffffff';
+                        // defaultColor(
+                        //     selectedAnswerLabel,
+                        //     document.getElementById(
+                        //         `option-color${selectedAnswer}`
+                        //     ),
+                        //     correctAnswerLabel
+                        // );
                     }
                 }, 2000);
             } else {
@@ -141,6 +184,20 @@ function checkAnswer(selectedAnswer) {
     checkRequest.send();
 }
 
+function defaultColor(
+    selectedAnswerLabel,
+    selectedAnswerSpan,
+    correctAnswerLabel
+) {
+    setTimeout(() => {
+        selectedAnswerLabel.style.background = '#390f4e';
+        if (selectedAnswerSpan) selectedAnswerSpan.style.color = '#f0d245';
+        if (correctAnswerLabel) correctAnswerLabel.style.background = '#390f4e';
+
+        if (isFlip) flipTheQuestionMethod();
+    }, 3000);
+}
+
 // Lifelines
 const audiencePoll = document.getElementById('audience-poll');
 const fiftyFifty = document.getElementById('50-50');
@@ -148,6 +205,8 @@ const flipTheQuestion = document.getElementById('flip-the-question');
 const askTheExpert = document.getElementById('ask-the-expert');
 
 audiencePoll.addEventListener('click', () => {
+    console.log(questionId);
+
     const div = document.getElementById('audience-poll-div');
     if (div.classList.contains('unused')) {
         // Use the lifeline
@@ -171,6 +230,7 @@ audiencePoll.addEventListener('click', () => {
                         responseObject.option3,
                         responseObject.option4
                     );
+                    div.classList.remove('unused');
                 } else {
                     console.log('Error');
                 }
@@ -190,8 +250,6 @@ audiencePoll.addEventListener('click', () => {
         });
 
         dialog.style.display = 'block';
-
-        div.classList.remove('unused');
     } else {
         console.log('Already used');
     }
@@ -281,11 +339,12 @@ fiftyFifty.addEventListener('click', () => {
                     const incorrectAnswer1 = document.getElementById(
                         `option${responseObject.remove1}`
                     );
-                    incorrectAnswer1.innerHTML = '';
+                    incorrectAnswer1.innerHTML = '&nbsp;';
                     const incorrectAnswer2 = document.getElementById(
                         `option${responseObject.remove2}`
                     );
-                    incorrectAnswer2.innerHTML = '';
+                    incorrectAnswer2.innerHTML = '&nbsp;';
+                    div.classList.remove('unused');
                 } else {
                     console.log('Error');
                 }
@@ -297,20 +356,33 @@ fiftyFifty.addEventListener('click', () => {
             true
         );
         fiftyFiftyRequest.send();
-
-        div.classList.remove('unused');
     } else {
         console.log('Already used');
     }
 });
 
 flipTheQuestion.addEventListener('click', () => {
-    if (flipTheQuestion.classList.contains('unused')) {
+    const div = document.getElementById('flip-the-question-div');
+    if (div.classList.contains('unused')) {
         // Use the lifeline
+        flipMessage.style.display = 'block';
+        isFlip = true;
+        div.classList.remove('unused');
     } else {
         console.log('Already used');
     }
 });
+
+function flipTheQuestionMethod() {
+    const answerContainer = document.getElementById('answer-container')
+        .childNodes;
+    answerContainer.forEach(label => {
+        label.innerHTML = '&nbsp;';
+    });
+    isFlip = false;
+    flipMessage.style.display = 'none';
+    setTimeout(() => getQuestion(slot), 1000);
+}
 
 // Ask the expert
 askTheExpert.addEventListener('click', () => {
@@ -337,6 +409,7 @@ askTheExpert.addEventListener('click', () => {
                         `option${responseObject.answer}`
                     ).textContent;
                     text.innerHTML = `Expert thinks the answer is ${answerLabelText}`;
+                    div.classList.remove('unused');
                 } else {
                     console.log('Error');
                 }
@@ -356,8 +429,6 @@ askTheExpert.addEventListener('click', () => {
         });
 
         dialog.style.display = 'block';
-
-        div.classList.remove('unused');
     } else {
         console.log('Already used');
     }

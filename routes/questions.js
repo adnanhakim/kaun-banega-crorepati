@@ -148,6 +148,25 @@ router.get('/lifelines/fiftyfifty/:questionId', async (req, res) => {
     }
 });
 
+router.get('/lifelines/flipthequestion/:questionId/:slot', async (req, res) => {
+    try {
+        const count = await Question.countDocuments({
+            slot: req.params.slot
+        });
+        const random = Math.floor(Math.random() * (count - 1));
+        const question = await Question.find({
+            _id: { $not: { $in: req.params.questionId } },
+            slot: req.params.slot
+        })
+            .limit(1)
+            .skip(random);
+        res.status(200).json(question);
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err });
+    }
+});
+
 router.get('/lifelines/asktheexpert/:questionId', async (req, res) => {
     try {
         const question = await Question.findById(req.params.questionId);
