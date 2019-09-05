@@ -73,107 +73,49 @@ router.get('/checkanswer/:questionId', async (req, res) => {
 router.get('/lifelines/audiencepoll/:questionId', async (req, res) => {
     try {
         const question = await Question.findById(req.params.questionId);
-        if (question.answer == 1) {
-            let option1 = Math.floor(Math.random() * 100);
-            if (option1 < 50) option1 += 50;
-            let total = option1;
-            let option2 = Math.floor(Math.random() * 100);
-            while (option2 + total > 100) {
-                option2 = Math.floor(Math.random() * 100);
-            }
-            total = total += option2;
-            let option3 = Math.floor(Math.random() * 100);
-            while (option3 + total > 100) {
-                option3 = Math.floor(Math.random() * 100);
-            }
-            total = total += option3;
-            let option4 = 100 - total;
-            const data = bind(option1, option2, option3, option4);
-            res.status(200).json(data);
-        } else if (question.answer == 2) {
-            let option2 = Math.floor(Math.random() * 100);
-            if (option2 < 50) option2 += 50;
-            let total = option2;
-            let option1 = Math.floor(Math.random() * 100);
-            while (option1 + total > 100) {
-                option1 = Math.floor(Math.random() * 100);
-            }
-            total = total += option1;
-            let option3 = Math.floor(Math.random() * 100);
-            while (option3 + total > 100) {
-                option3 = Math.floor(Math.random() * 100);
-            }
-            total = total += option3;
-            let option4 = 100 - total;
-            const data = bind(option1, option2, option3, option4);
-            res.status(200).json(data);
-        } else if (question.answer == 3) {
-            // let option3 = Math.floor(Math.random() * 100);
-            // if (option3 < 50) option3 += 50;
-            // let total = option3;
-            // let option1 = Math.floor(Math.random() * 100);
-            // while (option1 + total > 100) {
-            //     option1 = Math.floor(Math.random() * 100);
-            // }
-            // total = total += option1;
-            // let option2 = Math.floor(Math.random() * 100);
-            // while (option2 + total > 100) {
-            //     option2 = Math.floor(Math.random() * 100);
-            // }
-            // total = total += option2;
-            // let option4 = 100 - total;
-            // const data = bind(option1, option2, option3, option4);
-            // res.status(200).json(data);
-            const options = audiencePoll(1);
-            console.log(options);
-
-            const data = bind(options[0], options[1], options[2], options[3]);
-            res.status(200).json(data);
-        } else {
-            let option4 = Math.floor(Math.random() * 100);
-            if (option4 < 50) option4 += 50;
-            let total = option4;
-            let option1 = Math.floor(Math.random() * 100);
-            while (option1 + total > 100) {
-                option1 = Math.floor(Math.random() * 100);
-            }
-            total = total += option1;
-            let option2 = Math.floor(Math.random() * 100);
-            while (option2 + total > 100) {
-                option2 = Math.floor(Math.random() * 100);
-            }
-            total = total += option2;
-            let option3 = 100 - total;
-            const data = bind(option1, option2, option3, option4);
-            res.status(200).json(data);
-        }
+        if (question.slot <= 40000)
+            options = audiencePoll(question.answer - 1, 50);
+        else if (question.slot <= 320000)
+            options = audiencePoll(question.answer - 1, 30);
+        else options = audiencePoll(question.answer - 1, 10);
+        const data = bind(options[0], options[1], options[2], options[3]);
+        res.status(200).json(data);
     } catch (err) {
         console.log(err);
         res.status(400).json({ error: err });
     }
 });
 
-function audiencePoll(answer) {
-    let options = [0, 0, 0, 0];
-    options[answer] = Math.floor(Math.random() * 100);
-    if (options[answer] < 50) options[answer] += 50;
-    console.log(options[answer]);
-    let total = options[answer];
-    for (i = 0, j = 0; i < 4; i++) {
-        console.log(`${i}, ${j}, ${total}`);
+// function audiencePoll(answer) {
+//     let options = [0, 0, 0, 0];
+//     options[answer] = Math.floor(Math.random() * 50) + 50;
+//     let total = options[answer];
+//     for (i = 0, j = 0; i < 4; i++) {
+//         if (j == 2) {
+//             if (answer == 2) i++;
+//             options[i] = 100 - total;
+//             total += options[i];
+//             if (answer == 3) i++;
+//         } else if (i != answer) {
+//             let random = Math.floor(Math.random() * (100 - total));
+//             options[i] = random;
+//             total += random;
+//             j++;
+//         }
+//     }
+//     return options;
+// }
 
-        if (j == 2) {
-            console.log(`J: ${i}, ${j}, ${total}`);
-            options[i] = 100 - total;
-            console.log(`Final Total: ${total}`);
-        }
-        if (i != answer) {
-            let random = Math.floor(Math.random() * 100);
-            while (total + random > 100)
-                random = Math.floor(Math.random() * 100);
-            options[i] = random;
-            total += random;
-            j++;
+function audiencePoll(answer, value) {
+    let options = [0, 0, 0, 0];
+    options[answer] = Math.floor(Math.random() * 50) + value;
+    let total = options[answer];
+    for (let i = 0; i < 3; i++) {
+        let zeroAt = options.indexOf(0);
+        if (i == 2) options[zeroAt] = 100 - total;
+        else {
+            options[zeroAt] = Math.floor(Math.random() * (100 - total));
+            total += options[zeroAt];
         }
     }
     return options;

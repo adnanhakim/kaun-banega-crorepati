@@ -24,7 +24,7 @@ request.onload = () => {
     if (responseObject) handleResponse(responseObject, request.status);
 };
 
-request.open('get', 'http://localhost:3000/api/question/10000', true);
+request.open('get', 'http://localhost:3000/api/question/640000', true);
 request.send();
 
 function handleResponse(responseObject, status) {
