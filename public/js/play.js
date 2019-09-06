@@ -6,6 +6,7 @@ let questionId = 0,
     option3 = '',
     option4 = '',
     slot = 0,
+    checkpoint = 0,
     isFlip = false;
 
 // Question Container
@@ -38,9 +39,9 @@ const buttons = {
     quit: document.getElementById('quit-button')
 };
 
-// Slot Container
+// Slot Container (Started array from 1)
 const slots = [
-    null,
+    0,
     1000,
     2000,
     3000,
@@ -60,11 +61,17 @@ const slots = [
 ];
 
 // TODO Get the slot
-// Initialize slot to 1
-slot = 1;
+function startGame() {
+    // Initialize slot to 1
+    slot = 1;
 
-// Get the Question
-getQuestion(slots[slot]);
+    // Get the Question
+    getQuestion(slots[slot]);
+}
+
+window.addEventListener('DOMContentLoaded', event => {
+    startGame();
+});
 
 buttons.lock.addEventListener('click', () => {
     // Lock Buttons and Lifelines
@@ -100,13 +107,19 @@ buttons.lock.addEventListener('click', () => {
     checkAnswer(selectedAnswer[0].value, isFlip);
 });
 
+buttons.quit.addEventListener('click', () => {
+    endGame(true);
+});
+
 function getQuestion(slot) {
     // Lock Buttons and Lifelines
     lockButtons(buttons);
     lockLifelines(lifelines);
 
+    console.log(slots[slot]);
+    console.log(slot);
     // Make question AJAX request
-    const questionRequest = new XMLHttpRequest();
+    let questionRequest = new XMLHttpRequest();
     questionRequest.onload = () => {
         let responseObject = null;
 
@@ -117,9 +130,9 @@ function getQuestion(slot) {
         }
 
         if (responseObject) {
-            console.log(responseObject[0]);
             if (questionRequest.status == 200) {
                 // If question is received successfully set the question
+                console.log(responseObject[0]);
                 setQuestion(responseObject[0]);
             } else {
                 // TODO Error if network issue
@@ -172,7 +185,7 @@ function setQuestion(questionObject) {
 
 function checkAnswer(selectedAnswer) {
     // Make check answer AJAX request
-    const checkRequest = new XMLHttpRequest();
+    let checkRequest = new XMLHttpRequest();
     checkRequest.onload = () => {
         let responseObject = null;
         try {
@@ -198,6 +211,11 @@ function checkAnswer(selectedAnswer) {
                             `option-color${selectedAnswer}`
                         );
                         optionColorSpan.style.color = '#f0d245';
+
+                        // Since answer is correct, end the question and go to next question
+                        setTimeout(() => {
+                            endQuestion(true);
+                        }, 3000);
                     } else {
                         console.log('Incorrect answer!');
                         selectedAnswerLabel.style.background =
@@ -208,12 +226,12 @@ function checkAnswer(selectedAnswer) {
                         correctAnswerLabel.style.background =
                             'linear-gradient(90deg, rgba(47,132,4,1) 0%, rgba(87,212,8,1) 50%, rgba(47,132,4,1) 100%)';
                         correctAnswerLabel.style.color = '#ffffff';
-                    }
 
-                    // End the question
-                    setTimeout(() => {
-                        endQuestion();
-                    }, 3000);
+                        // Since answer is incorrect end the game
+                        setTimeout(() => {
+                            endQuestion(false);
+                        }, 3000);
+                    }
                 }, 2000);
             } else {
                 console.log('Error: ' + responseObject.error);
@@ -229,7 +247,7 @@ function checkAnswer(selectedAnswer) {
     checkRequest.send();
 }
 
-function endQuestion() {
+function endQuestion(isCorrect) {
     // TODO Display a dialog
 
     setTimeout(() => {
@@ -245,7 +263,39 @@ function endQuestion() {
         document.querySelectorAll('.option-color').forEach(span => {
             span.style.color = '#f0d245';
         });
+
+        if (isCorrect) {
+            nextQuestion();
+        } else {
+            endGame(false);
+        }
     }, 4000);
+}
+
+function nextQuestion() {
+    // Save the checkpoint if slot is 10000 or 320000
+    if (slot == 5 || slot == 10) {
+        console.log('Checkpoint');
+        checkpoint = slot;
+    }
+
+    // Save color marker
+    const marker = document.getElementById(`slot-marker-${slot}`);
+    marker.style.visibility = 'visible';
+
+    slot++;
+    getQuestion(slots[slot]);
+}
+
+function endGame(isQuit) {
+    if (isQuit) {
+        console.log(`You have won Rs ${slots[slot - 1]}`);
+    } else {
+        console.log(`You have won Rs ${slots[checkpoint]}`);
+    }
+    document.querySelectorAll('.reached').forEach(marker => {
+        marker.style.visibility = 'hidden';
+    });
 }
 
 lifelines.audiencePoll.addEventListener('click', () => {
