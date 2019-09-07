@@ -22,7 +22,8 @@ const container = {
 const dialogs = {
     audienceDialog: document.getElementById('audience-poll-dialog'),
     flipDialog: document.getElementById('flip-the-question-message'),
-    expertDialog: document.getElementById('ask-the-expert-dialog')
+    expertDialog: document.getElementById('ask-the-expert-dialog'),
+    quitDialog: document.getElementById('quit-dialog')
 };
 
 // Lifelines Container
@@ -63,7 +64,7 @@ const slots = [
 // TODO Get the slot
 function startGame() {
     // Initialize slot to 1
-    slot = 1;
+    slot = 11;
 
     // Get the Question
     getQuestion(slots[slot]);
@@ -108,7 +109,24 @@ buttons.lock.addEventListener('click', () => {
 });
 
 buttons.quit.addEventListener('click', () => {
-    endGame(true);
+    // Show Dialog
+    dialogs.quitDialog.style.display = 'block';
+
+    const message = document.getElementById('quit-dialog-message');
+    message.innerHTML = `Are you sure you want to quit?<br />You will win Rs ${
+        slots[slot - 1]
+    }`;
+    const quitButton = document.getElementById('quit-dialog-quit');
+    const cancelButton = document.getElementById('quit-dialog-cancel');
+
+    quitButton.addEventListener('click', () => {
+        endGame(true);
+        dialogs.quitDialog.style.display = 'none';
+    });
+
+    cancelButton.addEventListener('click', () => {
+        dialogs.quitDialog.style.display = 'none';
+    });
 });
 
 function getQuestion(slot) {

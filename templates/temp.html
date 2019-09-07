@@ -29,7 +29,7 @@
                 border-radius: 0px 20px 0px 20px;
             }
 
-            #ask-the-expert-p {
+            #quit-dialog-message {
                 font-family: 'Poppins';
                 font-size: 18px;
                 color: #ffffff;
@@ -52,61 +52,63 @@
                 font-family: 'Poppins', sans-serif;
                 font-size: 16px;
             }
+
+            #timer {
+                color: #ffffff;
+                font-family: 'Poppins';
+                font-size: 32px;
+            }
         </style>
     </head>
     <body>
-        <div class="dialog" id="ask-the-expert-dialog">
-            <p id="ask-the-expert-p"></p>
-            <button class="dialog-close" id="ask-the-expert-close">
-                Close
+        <div class="dialog" id="quit-dialog">
+            <p id="quit-dialog-message">
+                Are you sure you want to quit?<br />You will win Rs 3000
+            </p>
+            <button class="dialog-close" id="quit-dialog-quit">
+                Yes, I want to quit
+            </button>
+            <button class="dialog-close" id="quit-dialog-cancel">
+                No, I want to keep playing
             </button>
         </div>
 
         <button id="ask-the-expert">Ask the expert</button>
 
+        <div id="timer"></div>
+
         <script>
-            const button = document.getElementById('ask-the-expert');
-            button.addEventListener('click', () => {
-                const dialog = document.getElementById('ask-the-expert-dialog');
-                dialog.style.display = 'block';
+            //const dialog = document.getElementById('quit-dialog');
+            //const button = document.getElementById('ask-the-expert');
+            //button.addEventListener('click', () => {
+            //    dialog.style.display = 'block';
+            //});
 
-                const askTheExpertRequest = new XMLHttpRequest();
-                askTheExpertRequest.onload = () => {
-                    let responseObject = null;
+            //const btnQuit = document.getElementById('quit-dialog-quit');
+            //btnClose.addEventListener('click', () => {
+            //    console.log('Quit');
+            //    dialog.style.display = 'none';
+            //});
 
-                    try {
-                        responseObject = JSON.parse(
-                            askTheExpertRequest.responseText
-                        );
-                    } catch (err) {
-                        console.log('Could not parse JSON!');
+            //const btnCancel = document.getElementById('quit-dialog-cancel');
+            //btnClose.addEventListener('click', () => {
+            //    console.log('Cancel');
+            //    dialog.style.display = 'none';
+            //});
+
+            const timerDiv = document.getElementById('timer');
+            function startTimer(time) {
+                let seconds = time;
+                const timer = setInterval(() => {
+                    if (seconds < 0) {
+                        clearInterval(timer);
+                    } else {
+                        timerDiv.innerHTML = seconds;
+                        seconds--;
                     }
-
-                    if (responseObject) {
-                        if (askTheExpertRequest.status == 200) {
-                            console.log(responseObject);
-                            const text = document.getElementById(
-                                'ask-the-expert-p'
-                            );
-                            text.innerHTML = `Expert thinks the answer is ${responseObject.answer}`;
-                        } else {
-                            console.log('Error');
-                        }
-                    }
-                };
-                askTheExpertRequest.open(
-                    'get',
-                    'http://localhost:3000/api/lifelines/asktheexpert/5d6e88234ca2d356b40f2a36',
-                    true
-                );
-                askTheExpertRequest.send();
-            });
-
-            const btnClose = document.getElementById('ask-the-expert-close');
-            btnClose.addEventListener('click', () => {
-                const dialog = document.getElementById('ask-the-expert-dialog');
-                dialog.style.display = 'none';
-            });
+                }, 1000);
+            }
+            startTimer(10);
         </script>
     </body>
 </html>
