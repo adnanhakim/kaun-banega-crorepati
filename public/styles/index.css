@@ -1,5 +1,12 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     background-color: #390f4e;
+    overflow: hidden;
 }
 
 #logo {
@@ -23,4 +30,59 @@ body {
     to {
         fill: white;
     }
+}
+
+#nav-bar {
+    display: flex;
+    justify-content: flex-end;
+    height: 8vh;
+    opacity: 0;
+}
+
+#nav-links {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 30%;
+}
+
+#nav-links li {
+    list-style: none;
+}
+
+#nav-links a {
+    text-decoration: none;
+    color: #f0d245;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+}
+
+#nav-links li:hover {
+    transform: scale(1.1);
+}
+
+/* Play Button */
+
+#button {
+    position: absolute;
+    top: 80%;
+    left: 28%;
+    transform: translateY(200px);
+    opacity: 1;
+}
+
+#button button {
+    background: none;
+    border: 3px inset #f0d245;
+    font-size: 2rem;
+    padding: 0.4rem 1.2rem;
+    border-top-right-radius: 10%;
+    border-bottom-left-radius: 10%;
+    text-transform: uppercase;
+    color: #f0d245;
+}
+
+#button button:hover {
+    background: #f0d245;
+    color: #390f4e;
 }
