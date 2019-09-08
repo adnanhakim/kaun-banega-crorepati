@@ -9,6 +9,13 @@ let questionId = 0,
     checkpoint = 0,
     isFlip = false;
 
+// Time Container
+const timerContainer = {
+    span: document.getElementById('progress-span'),
+    left: document.getElementById('progress-left'),
+    right: document.getElementById('progress-right')
+};
+
 // Question Container
 const container = {
     question: document.getElementById('question'),
@@ -482,3 +489,20 @@ lifelines.askTheExpert.addEventListener('click', () => {
         console.log('Already used');
     }
 });
+
+function startTimer(time) {
+    let seconds = time;
+    const timer = setInterval(() => {
+        if (seconds < 0) {
+            clearInterval(timer);
+        } else {
+            let progress = 100 - Math.floor((seconds / time) * 100);
+            timerContainer.left.style.width = progress + '%';
+            timerContainer.right.style.width = progress + '%';
+            timerContainer.span.innerHTML = seconds;
+            seconds--;
+        }
+    }, 1000);
+}
+
+//startTimer(45);

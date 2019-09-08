@@ -36,6 +36,88 @@ main {
     color: green;
 }
 
+/* Timer */
+.timer-div {
+    display: flex;
+    align-items: baseline;
+    background: inherit;
+    justify-content: center;
+}
+
+.timer {
+    position: relative;
+    background: #390f4e;
+    width: 120px;
+    height: 60px;
+    color: #ffffff;
+    font-size: 30px;
+    border-top-left-radius: 63px;
+    border-top-right-radius: 63px;
+    border: 3px solid #f0d245;
+    border-bottom: 0;
+    margin: 0px 10px;
+}
+
+.timer span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 15px;
+    background: #390f4e;
+    position: relative;
+}
+
+/* To add padding between question and progress bar */
+.padding-div {
+    position: relative;
+    background: inherit;
+    width: 30%;
+    height: 25px;
+    padding-bottom: 10px;
+}
+
+#progress-bar-left {
+    background: linear-gradient(
+        90deg,
+        rgba(72, 255, 72, 1) 0%,
+        rgba(255, 193, 58, 1) 50%,
+        rgba(255, 58, 58, 1) 100%
+    );
+}
+
+#progress-bar-right {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 58, 58, 1) 0%,
+        rgba(255, 193, 58, 1) 50%,
+        rgba(72, 255, 72, 1) 100%
+    );
+}
+
+#progress-left {
+    position: absolute;
+    width: 0%;
+    height: 100%;
+    background: #ececec;
+    top: 0;
+    left: 0;
+}
+
+#progress-right {
+    position: absolute;
+    width: 0%;
+    height: 100%;
+    background: #ececec;
+    top: 0;
+    right: 0;
+}
+
+/* Question */
 #question {
     position: relative;
     background-color: #390f4e;
@@ -48,6 +130,7 @@ main {
     text-align: center;
     margin-bottom: 10px;
     border-radius: 0px 20px 0px 20px;
+    /* border-top: 2px solid#f0d245; */
 }
 
 #answer-container {
@@ -96,7 +179,7 @@ main {
     display: none;
 }
 
-/* When the radio button is checked, add a blue background */
+/* When the radio button is checked, add a yellow background */
 #answer-container input:checked ~ .checked {
     background-size: 100%;
     border: 1px solid;
