@@ -10,10 +10,13 @@ let questionId = 0,
     isFlip = false;
 
 // Time Container
-const timerContainer = {
+const timer = {
     span: document.getElementById('progress-span'),
     left: document.getElementById('progress-left'),
-    right: document.getElementById('progress-right')
+    right: document.getElementById('progress-right'),
+    running: false,
+    timeLeft: 45,
+    timeTotal: 45
 };
 
 // Question Container
@@ -77,7 +80,7 @@ const slots = [
 // TODO Get the slot
 function startGame() {
     // Initialize slot to 1
-    slot = 12;
+    slot = 1;
 
     // Get the Question
     getQuestion(slots[slot]);
@@ -92,38 +95,55 @@ buttons.lock.addEventListener('click', () => {
     lockButtons(buttons);
     lockLifelines(lifelines);
 
+    // Pause timer if exists
+    if (slot <= 10) {
+        pauseTimer();
+    }
+
     // Gets the selected input radio button
     const selectedAnswer = Array.from(
         document.getElementsByName('answer')
     ).filter(element => element.checked == true);
 
-    // Gets the parent of input button -> Label
-    const answerLabel = selectedAnswer[0].parentNode;
+    if (selectedAnswer.length == 1) {
+        // Answer is selected
+        // Gets the parent of input button -> Label
+        const answerLabel = selectedAnswer[0].parentNode;
 
-    // Gets all the checked spans and hides it after it has been clicked
-    const spans = document.querySelectorAll('.checked');
-    spans.forEach(span => {
-        span.style.visibility = 'hidden';
-    });
+        // Gets all the checked spans and hides it after it has been clicked
+        const spans = document.querySelectorAll('.checked');
+        spans.forEach(span => {
+            span.style.visibility = 'hidden';
+        });
 
-    // Gets the corrected answer option color and makes it white
-    const optionColorSpan = document.getElementById(
-        `option-color${selectedAnswer[0].value}`
-    );
-    optionColorSpan.style.color = '#ececec';
+        // Gets the corrected answer option color and makes it white
+        const optionColorSpan = document.getElementById(
+            `option-color${selectedAnswer[0].value}`
+        );
+        optionColorSpan.style.color = '#ececec';
 
-    // Sets the color of label to yellow
-    answerLabel.style.background =
-        'linear-gradient(90deg, rgba(240,176,0,1) 0%, rgba(224,209,70,1) 50%, rgba(240,176,0,1) 100%)';
-    answerLabel.style.color = '#2a2a2a';
-    console.log(selectedAnswer[0].value);
+        // Sets the color of label to yellow
+        answerLabel.style.background =
+            'linear-gradient(90deg, rgba(240,176,0,1) 0%, rgba(224,209,70,1) 50%, rgba(240,176,0,1) 100%)';
+        answerLabel.style.color = '#2a2a2a';
+        console.log(selectedAnswer[0].value);
 
-    checkAnswer(selectedAnswer[0].value, isFlip);
+        checkAnswer(selectedAnswer[0].value);
+    } else {
+        // Time is up
+        console.log('Game ended');
+        checkAnswer(null);
+    }
 });
 
 buttons.quit.addEventListener('click', () => {
     // Show Dialog
     dialogs.quitDialog.style.display = 'block';
+
+    // Pause timer if exists
+    if (slot <= 10) {
+        pauseTimer();
+    }
 
     const message = document.getElementById('quit-dialog-message');
     message.innerHTML = `Are you sure you want to quit?<br />You will win Rs ${
@@ -142,10 +162,22 @@ buttons.quit.addEventListener('click', () => {
     });
 });
 
-function getQuestion(slot) {
+function getQuestion(price) {
     // Lock Buttons and Lifelines
     lockButtons(buttons);
     lockLifelines(lifelines);
+
+    // Set the time
+    if (slot <= 5) {
+        setTimer(45);
+        console.log('Timer Entered if');
+    } else if (slot <= 10) {
+        setTimer(60);
+        console.log('Timer Entered else if');
+    } else {
+        setTimer(null);
+        console.log('Timer Entered else');
+    }
 
     console.log(slots[slot]);
     console.log(slot);
@@ -176,14 +208,14 @@ function getQuestion(slot) {
         console.log('Entered else');
         questionRequest.open(
             'get',
-            `http://localhost:3000/api/lifelines/flipthequestion/${questionId}/${slot}`,
+            `http://localhost:3000/api/lifelines/flipthequestion/${questionId}/${price}`,
             true
         );
     } else {
         console.log('Entered if');
         questionRequest.open(
             'get',
-            `http://localhost:3000/api/question/${slot}`,
+            `http://localhost:3000/api/question/${price}`,
             true
         );
     }
@@ -211,6 +243,11 @@ function setQuestion(questionObject) {
         // Unlock buttons and lifelines once options are displayed
         unlockButtons(buttons);
         unlockLifelines(lifelines);
+
+        // Start the timer if slots < 10
+        if (slot < 10) {
+            startResumeTimer();
+        }
     }, 5000);
 }
 
@@ -249,8 +286,12 @@ function checkAnswer(selectedAnswer) {
                         }, 3000);
                     } else {
                         console.log('Incorrect answer!');
-                        selectedAnswerLabel.style.background =
-                            'linear-gradient(90deg, rgba(240,176,0,1) 0%, rgba(224,209,70,1) 50%, rgba(240,176,0,1) 100%)';
+                        if (selectedAnswer) {
+                            // Answer is selected but is wrong
+                            selectedAnswerLabel.style.background =
+                                'linear-gradient(90deg, rgba(240,176,0,1) 0%, rgba(224,209,70,1) 50%, rgba(240,176,0,1) 100%)';
+                        }
+                        // Display correct answer
                         const correctAnswerLabel = document.getElementById(
                             `option${responseObject.answer}`
                         );
@@ -310,6 +351,14 @@ function nextQuestion() {
         checkpoint = slot;
     }
 
+    if (slot == 10) {
+        // Unlock 7 crore question
+        lockedElements = document.querySelectorAll('.locked');
+        lockedElements.forEach(lockedElement => {
+            lockedElement.classList.remove('locked');
+        });
+    }
+
     // Save color marker
     const marker = document.getElementById(`slot-marker-${slot}`);
     marker.style.visibility = 'visible';
@@ -330,7 +379,10 @@ function endGame(isQuit) {
 }
 
 lifelines.audiencePoll.addEventListener('click', () => {
-    console.log(questionId);
+    // Pause the timer if it exists
+    if (slot <= 10) {
+        pauseTimer();
+    }
 
     const div = document.getElementById('audience-poll-div');
     if (div.classList.contains('unused')) {
@@ -385,6 +437,11 @@ lifelines.audiencePoll.addEventListener('click', () => {
         const btnClose = document.getElementById('audience-poll-close');
         btnClose.addEventListener('click', () => {
             dialogs.audienceDialog.style.display = 'none';
+
+            // Resume the timer if it exists
+            if (slot <= 10) {
+                startResumeTimer();
+            }
         });
 
         dialogs.audienceDialog.style.display = 'block';
@@ -472,6 +529,11 @@ function flipTheQuestionMethod() {
 
 // Ask the expert
 lifelines.askTheExpert.addEventListener('click', () => {
+    // Pause the timer if it exists
+    if (slot <= 10) {
+        pauseTimer();
+    }
+
     const div = document.getElementById('ask-the-expert-div');
     if (div.classList.contains('unused')) {
         // Use the lifeline
@@ -525,6 +587,11 @@ lifelines.askTheExpert.addEventListener('click', () => {
         const btnClose = document.getElementById('ask-the-expert-close');
         btnClose.addEventListener('click', () => {
             dialogs.expertDialog.style.display = 'none';
+
+            // Resume the timer if it exists
+            if (slot <= 10) {
+                startResumeTimer();
+            }
         });
 
         dialogs.expertDialog.style.display = 'block';
@@ -534,44 +601,54 @@ lifelines.askTheExpert.addEventListener('click', () => {
 });
 
 function setTimer(time) {
-    timerContainer.span.innerHTML = time;
-    timeLeft = time;
-    timeTotal = time;
+    timer.running = false;
+    if (time) {
+        // Time is either 45 or 60 seconds
+        timer.span.innerHTML = time;
+        timer.timeLeft = time;
+        timer.timeTotal = time;
+        timer.left.style.width = '0%';
+        timer.right.style.width = '0%';
+    } else {
+        // Time is infinity
+        timer.span.innerHTML = 0;
+        timer.timeLeft = 0;
+        timer.timeTotal = 0;
+        timer.left.style.width = '100%';
+        timer.right.style.width = '100%';
+    }
 }
 
-running = false;
-timeLeft = 45;
-timeTotal = 45;
-
 function startResumeTimer() {
-    if (!running) {
+    if (!timer.running) {
         // Start or Resume Timer
-        running = true;
-        decrementTimer(timeLeft);
+        timer.running = true;
+        decrementTimer(timer.timeLeft);
     }
 }
 
 function pauseTimer() {
-    if (running) {
+    if (timer.running) {
         // Pause Timer
-        running = false;
+        timer.running = false;
     }
 }
 
 function decrementTimer() {
-    if (running) {
+    if (timer.running) {
         setTimeout(() => {
-            if (timeLeft >= 1) {
-                timeLeft--;
-                let progress = 100 - Math.floor((timeLeft / timeTotal) * 100);
-                timerContainer.left.style.width = progress + '%';
-                timerContainer.right.style.width = progress + '%';
-                timerContainer.span.innerHTML = timeLeft;
+            if (timer.timeLeft >= 1) {
+                timer.timeLeft--;
+                let progress =
+                    100 - Math.floor((timer.timeLeft / timer.timeTotal) * 100);
+                timer.left.style.width = progress + '%';
+                timer.right.style.width = progress + '%';
+                timer.span.innerHTML = timer.timeLeft;
                 decrementTimer();
+            } else {
+                console.log('Time is up');
+                buttons.lock.click();
             }
         }, 1000);
     }
 }
-
-setTimer(45);
-startResumeTimer();
