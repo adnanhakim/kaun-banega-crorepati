@@ -247,7 +247,7 @@ function setQuestion(questionObject) {
         unlockLifelines(lifelines);
 
         // Start the timer if slots < 10
-        if (slot < 10) {
+        if (slot <= 10) {
             startResumeTimer();
         }
     }, 5000);
