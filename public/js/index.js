@@ -36,7 +36,7 @@ TweenMax.to('#button', 3, {
    y: 0,
    opacity: 1,
    ease: Bounce.easeOut,
-   delay: 12
+   delay: 7
 });
 TweenMax.to('#amitabh-img', 2, {
    x: 10,
