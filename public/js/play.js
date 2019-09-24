@@ -44,7 +44,7 @@ const lifelines = {
     askTheExpert: document.getElementById('ask-the-expert')
 };
 
-// Lifeline Booleans
+// Fifty Fifty Booleans
 const fiftyFiftyDetailsContainer = {
     is50: false,
     removedOptions: []
@@ -80,7 +80,7 @@ const slots = [
 // TODO Get the slot
 function startGame() {
     // Initialize slot to 1
-    slot = 1;
+    slot = 8;
 
     // Get the Question
     getQuestion(slots[slot]);
@@ -206,6 +206,8 @@ function getQuestion(price) {
 
     if (isFlip) {
         console.log('Entered else');
+        isFlip = false;
+        dialogs.flipDialog.style.display = 'none';
         questionRequest.open(
             'get',
             `http://localhost:3000/api/lifelines/flipthequestion/${questionId}/${price}`,
@@ -336,7 +338,9 @@ function endQuestion(isCorrect) {
             span.style.color = '#f0d245';
         });
 
-        if (isCorrect) {
+        if (isFlip) {
+            nextQuestion();
+        } else if (isCorrect) {
             nextQuestion();
         } else {
             endGame(false);
@@ -363,7 +367,7 @@ function nextQuestion() {
     const marker = document.getElementById(`slot-marker-${slot}`);
     marker.style.visibility = 'visible';
 
-    slot++;
+    if (!isFlip) slot++;
     getQuestion(slots[slot]);
 }
 
@@ -511,20 +515,19 @@ lifelines.flipTheQuestion.addEventListener('click', () => {
         dialogs.flipDialog.style.display = 'block';
         isFlip = true;
         div.classList.remove('unused');
+        flipTheQuestionMethod();
     } else {
         console.log('Already used');
     }
 });
 
 function flipTheQuestionMethod() {
-    const answerContainer = document.getElementById('answer-container')
-        .childNodes;
-    answerContainer.forEach(label => {
-        label.innerHTML = '&nbsp;';
-    });
-    isFlip = false;
-    dialogs.flipDialog.style.display = 'none';
-    setTimeout(() => getQuestion(slot), 1000);
+    // Pause the timer if it exists
+    if (slot <= 10) {
+        pauseTimer();
+    }
+
+    lockLifelines();
 }
 
 // Ask the expert
