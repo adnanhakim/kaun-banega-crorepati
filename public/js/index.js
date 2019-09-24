@@ -19,41 +19,32 @@ TweenMax.to('#logo', 2.5, {
    delay: 4
 });
 TweenMax.to('#svg-logo path', 3.5, { stroke: '#f0d245', delay: 2 });
-TweenMax.to('#nav-bar', 2.5, { opacity: 1, x: -100, delay: 6 });
+TweenMax.to('#nav-bar', 2.5, {
+   opacity: 1,
+   x: -90,
+   delay: 6.2,
+   ease: Expo.easeOut
+});
+TweenMax.to('#powered-by', 2.5, {
+   x: 0,
+   delay: 6.2,
+   ease: Expo.easeOut
+});
+TweenMax.to('#logo-img-shadow', 2.5, { opacity: 1, delay: 6 });
+TweenMax.to('#logo-img', 10, { opacity: 1, delay: 6 });
 TweenMax.to('#button', 3, {
    y: 0,
    opacity: 1,
    ease: Bounce.easeOut,
-   delay: 10
+   delay: 12
+});
+TweenMax.to('#amitabh-img', 2, {
+   x: 10,
+   delay: 6,
+   ease: Back.easeOut.config(1.7)
 });
 
-// const logoDiv = document.querySelector('#logo');
-// setTimeout(() => {
-//    logoDiv.style.top = '-3%';
-//    logoDiv.style.left = '-15%';
-//    logoDiv.style.transform = 'scale(' + 0.5 + ')';
-//    logoDiv.style.transition = 'all 2s ease';
-// }, 4000);
-
-// const button = document.querySelector('#button');
-// setTimeout(() => {
-//    button.style.transform = 'translate(' + 500 + '%, ' + 350 + '%)';
-//    button.style.transition = 'all 2s ease';
-// }, 4500);
-
-// const navbar = document.querySelector('#nav-bar');
-// setTimeout(() => {
-//    let op = 0.1;
-//    navbar.style.visibility = 'visible';
-//    var timer = setInterval(function() {
-//       if (op >= 1) {
-//          clearInterval(timer);
-//       }
-//       navbar.style.opacity = op;
-//       navbar.style.filter = 'alpha(opacity=' + op * 100 + ')';
-//       op += op * 0.1;
-//    }, 30);
-// }, 5000);
-
-// const introMusic = document.querySelector('#kbc-intro-music');
-// introMusic.play();
+const playButton = document.querySelector('#button button');
+playButton.addEventListener('click', () => {
+   window.location.href = '/play';
+});
