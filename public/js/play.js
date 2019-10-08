@@ -7,7 +7,8 @@ let questionId = 0,
     option4 = '',
     slot = 0,
     checkpoint = 0,
-    isFlip = false;
+    isFlip = false,
+    isQuit = false;
 
 // Time Container
 const timer = {
@@ -33,7 +34,9 @@ const dialogs = {
     audienceDialog: document.getElementById('audience-poll-dialog'),
     flipDialog: document.getElementById('flip-the-question-message'),
     expertDialog: document.getElementById('ask-the-expert-dialog'),
-    quitDialog: document.getElementById('quit-dialog')
+    quitDialog: document.getElementById('quit-dialog'),
+    quitMessage: document.getElementById('quit-message'),
+    endGameDialog: document.getElementById('end-game-dialog')
 };
 
 // Lifelines Container
@@ -153,8 +156,9 @@ buttons.quit.addEventListener('click', () => {
     const cancelButton = document.getElementById('quit-dialog-cancel');
 
     quitButton.addEventListener('click', () => {
-        endGame(true);
+        isQuit = true;
         dialogs.quitDialog.style.display = 'none';
+        dialogs.quitMessage.style.display = 'block';
     });
 
     cancelButton.addEventListener('click', () => {
@@ -244,7 +248,7 @@ function setQuestion(questionObject) {
 
         // Unlock buttons and lifelines once options are displayed
         unlockButtons(buttons);
-        unlockLifelines(lifelines);
+        if (slot != 16) unlockLifelines(lifelines);
 
         // Start the timer if slots < 10
         if (slot <= 10) {
@@ -340,10 +344,12 @@ function endQuestion(isCorrect) {
 
         if (isFlip) {
             nextQuestion();
+        } else if (isQuit) {
+            endGame();
         } else if (isCorrect) {
             nextQuestion();
         } else {
-            endGame(false);
+            endGame();
         }
     }, 4000);
 }
@@ -363,20 +369,35 @@ function nextQuestion() {
         });
     }
 
-    // Save color marker
-    const marker = document.getElementById(`slot-marker-${slot}`);
-    marker.style.visibility = 'visible';
+    if (!isFlip) {
+        // Save color marker
+        const marker = document.getElementById(`slot-marker-${slot}`);
+        marker.style.visibility = 'visible';
+    }
 
     if (!isFlip) slot++;
     getQuestion(slots[slot]);
 }
 
-function endGame(isQuit) {
+function endGame() {
+    let price = null;
     if (isQuit) {
+        price = `Rs ${slots[slot - 1]}`;
         console.log(`You have won Rs ${slots[slot - 1]}`);
+        flipTheQuestionMethod();
     } else {
+        price = `Rs ${slots[checkpoint]}`;
         console.log(`You have won Rs ${slots[checkpoint]}`);
     }
+
+    dialogs.endGameDialog.style.display = 'block';
+    dialogs.endGameDialog.innerHTML = price;
+
+    setTimeout(() => {
+        window.location.href = 'http://localhost:3000';
+    }, 4000);
+
+    // Clear markers
     document.querySelectorAll('.reached').forEach(marker => {
         marker.style.visibility = 'hidden';
     });
@@ -527,7 +548,7 @@ function flipTheQuestionMethod() {
         pauseTimer();
     }
 
-    lockLifelines();
+    lockLifelines(lifelines);
 }
 
 // Ask the expert

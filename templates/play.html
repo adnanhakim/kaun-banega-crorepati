@@ -23,14 +23,22 @@
     <body>
         <main>
             <!-- Flip the Question Message -->
-            <div id="flip-the-question-message">
+            <div class="message" id="flip-the-question-message">
                 <h3>
                     Flip the Question is activated. Please guess the correct
                     answer to this question.
                 </h3>
             </div>
-            <!-- Timer -->
+           
+            <!-- Flip the Question Message -->
+            <div class="message" id="quit-message">
+               <h3>
+                   You have successfully quit the game. Please guess the correct
+                   answer to this question.
+               </h3>
+           </div>
 
+            <!-- Timer -->
             <div class="timer-div">
                 <div class="padding-div">
                     <div class="progress-bar" id="progress-bar-left">
@@ -104,6 +112,11 @@
             <button class="dialog-close" id="quit-dialog-cancel">
                No, I want to keep playing
             </button>
+         </div>
+
+         <!-- End Game Dialog -->
+         <div id="end-game-dialog">
+            <!-- Prize amount -->
          </div>
       </main>
       <aside>
