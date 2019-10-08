@@ -80,7 +80,7 @@ const slots = [
 // TODO Get the slot
 function startGame() {
     // Initialize slot to 1
-    slot = 8;
+    slot = 1;
 
     // Get the Question
     getQuestion(slots[slot]);
