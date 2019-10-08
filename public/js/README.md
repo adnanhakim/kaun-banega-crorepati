@@ -27,13 +27,13 @@
 
 ## Technologies Used
 
--   [node.js]("https://nodejs.org/en/" 'node.js')
--   [express]("https://www.npmjs.com/package/express" 'express') - Web framework
--   [socket.io]("https://socket.io/" 'socket.io') - Creation of rooms
+-   [node.js](https://nodejs.org/en/ 'node.js')
+-   [express](https://www.npmjs.com/package/express 'express') - Web framework
+-   [socket.io](https://socket.io/ 'socket.io') - Creation of rooms
 -   [ace.js](https://ace.c9.io/ 'ace.js') - Text Editor
--   [compilex]("https://www.npmjs.com/package/compilex" 'compilex') - Online code compilation
--   [passport.js]("https://www.npmjs.com/package/passport", 'passport.js') - User Verification
--   [mongodb]("https://www.mongodb.com/", 'MongoDb') - Database
+-   [compilex](https://www.npmjs.com/package/compilex 'compilex') - Online code compilation
+-   [passport.js](https://www.npmjs.com/package/passport, 'passport.js') - User Verification
+-   [mongodb](https://www.mongodb.com/, 'MongoDb') - Database
 
 ---
 
