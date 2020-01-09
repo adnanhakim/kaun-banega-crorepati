@@ -21,15 +21,14 @@ app.use('/api', questionRoute);
 // Routes
 app.get('/', (req, res) => {
     res.render('index');
-    //res.sendFile(__dirname + '/templates/index.html');
 });
 
 app.get('/play', (req, res) => {
-    res.sendFile(__dirname + '/views/play.html');
+    res.render('play');
 });
 
 app.get('/api/question', (req, res) => {
-    res.sendFile(__dirname + '/views/addquestion.html');
+    res.render('addquestion');
 });
 
 // Connect to db
