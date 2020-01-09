@@ -74,12 +74,12 @@ body {
 
 #button button {
    background: none;
-   border: 3px inset #f0d245;
+   border: 3px solid #f0d245;
    font-size: 2rem;
    padding: 0.4rem 1.2rem;
    border-top-right-radius: 10px;
    border-bottom-left-radius: 10px;
-   text-transform: uppercase;
+   text-transform: capitalize;
    color: #f0d245;
 }
 
