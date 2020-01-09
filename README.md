@@ -1,38 +1,73 @@
 # Kaun Banega Crorepati
 
-## Created using Node.js and MongoDB
-
-## Libraries Used
-
--   Node.js
--   Express
--   Nodemon
--   Mongoose
--   Json Web Token
--   Bcrypt
--   Dotenv
--   Cors
--   Body Parser
--   Joi
-
-## List of APIs
-
--   ### /questions - To see all the questions
-
-# Attendance Manager
-
 ## About
 
-An android application designed to keep track of attendance throughout the semester. This is my first Android application.
+A replication of the popular Indian general knowledge TV game show _Kaun Banega Crorepati (based on Who Wants to be a Millionaire?)_
 
-This application was designed keeping in mind the timetable of my college, DJSCE. Timetable is provided and changes with respective batches. Attendance can be marked in 'Mark your attendance' or quickly done with a left swipe on each subject, or can be cancelled with a right swipe. This also provides total overall attendance, subjects and its attendance at a glance.
+This web application is developed using node.js/express, trying to best replicate the traditional design to the web. This was developed as a college project. All the lifelines used and its logic is given below.
 
-The timetable is hard-coded into the application hence enabling it to work offline. Attendance is saved in SQLite.
+All the questions used in this application is manually added into MongoDb Atlas using `/addquestion` which is a form created to add the questions. No user data is required. 
 
 ## Technology Stack
 
-1. Developed using Android (Java)
-1. Data stored in SQLite
+1. Developed using node.js/express
+1. Questions stored in MongoDb Atlas
+
+## Libraries Used
+
+-   [node.js](https://nodejs.org/en/)
+-   [express](https://www.npmjs.com/package/express)
+-   [mongoose](https://www.npmjs.com/package/mongoose)
+-   [ejs](https://www.npmjs.com/package/ejs)
+-   [nodemon](https://www.npmjs.com/package/nodemon)
+-   [cors](https://www.npmjs.com/package/cors)
+-   [dotenv](https://www.npmjs.com/package/dotenv)
+-   [body-parser](https://www.npmjs.com/package/body-parser)
+
+## List of APIs
+
+-   `/questions` - Get all questions
+
+-   `/questions/:slot` - Get all questions per slot
+
+-   `/check/:questionId` - Get a specific question
+
+-   `/checkanswer/:questionId` - Get answer of specific question
+
+-   `/lifelines/audiencepoll/:questionId` - Get audience poll results
+
+-   `/lifelines/50-50-to-audiencepoll/:questionId/:removedOption1/:removedOption2` - Get audience poll results after 50-50
+
+-   `/lifelines/fiftyfifty/:questionId` - Get 50-50 results
+
+-   `/lifelines/flipthequestion/:questionId/:slot` - Get flipped question
+
+-   `/lifelines/asktheexpert/:questionId` - Get ask the experts results
+
+-   `/lifelines/50-50-to-asktheexpert/:questionId/:removedOption1/:removedOption2` - Get ask the experts results after 50-50
+
+-   `/add` - Post to add a new question from `/addquestion`
+
+## Lifeline Logic
+
+-   Audience Poll
+
+    > Less than 40,000 - Correct answer will have atleast 50% votes
+    >
+    > Less than 3,20,000 - Correct answer will have atleast 30% votes
+    >
+    > Above 3,20,000 - Correct answer will have atleast 10% votes
+
+-   50-50
+
+    > Removes two wrong answers
+
+-   Flip the Question
+
+    > Replaces current question with a new question of the same slot
+
+-   Ask the Expert
+    > 80% chance of telling the correct answer
 
 ## Build
 
