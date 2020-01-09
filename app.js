@@ -7,6 +7,7 @@ const cors = require('cors');
 require('dotenv/config');
 
 // Middlewares
+app.set('view engine', 'ejs');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -19,15 +20,16 @@ app.use('/api', questionRoute);
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/templates/index.html');
+    res.render('index');
+    //res.sendFile(__dirname + '/templates/index.html');
 });
 
 app.get('/play', (req, res) => {
-    res.sendFile(__dirname + '/templates/play.html');
+    res.sendFile(__dirname + '/views/play.html');
 });
 
 app.get('/api/question', (req, res) => {
-    res.sendFile(__dirname + '/templates/addquestion.html');
+    res.sendFile(__dirname + '/views/addquestion.html');
 });
 
 // Connect to db
