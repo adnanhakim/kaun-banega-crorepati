@@ -79,19 +79,19 @@ npm start
 ## Screenshots
 
 ###  General UI
-![General UI](https://imgur.com/JvhPmbN)
+![General UI](https://i.imgur.com/JvhPmbN.png)
 
 ### Audience Poll
-![Audience Poll](https://imgur.com/RdZk6eu)
+![Audience Poll](https://i.imgur.com/RdZk6eu.png)
 
 ### 50-50
-![50-50](https://imgur.com/gyOTHjo)
+![50-50](https://i.imgur.com/gyOTHjo.png)
 
 ### Wrong Answer
-![Wrong Answer](https://imgur.com/gAH9gaU)
+![Wrong Answer](https://i.imgur.com/gAH9gaU.png)
 
 ### Game End
-![Game End](https://imgur.com/zlOkU7R)
+![Game End](https://i.imgur.com/zlOkU7R.png)
 
 ## Developers
 
