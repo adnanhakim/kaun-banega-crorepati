@@ -76,6 +76,23 @@ npm install
 npm start
 ```
 
+## Screenshots
+
+###  General UI
+![General UI](https://imgur.com/JvhPmbN)
+
+### Audience Poll
+![Audience Poll](https://imgur.com/RdZk6eu)
+
+### 50-50
+![50-50](https://imgur.com/gyOTHjo)
+
+### Wrong Answer
+![Wrong Answer](https://imgur.com/gAH9gaU)
+
+### Game End
+![Game End](https://imgur.com/zlOkU7R)
+
 ## Developers
 
 > Adnan Hakim
