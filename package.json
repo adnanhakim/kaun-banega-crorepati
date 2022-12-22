@@ -17,7 +17,7 @@
         "dotenv": "^8.1.0",
         "ejs": "^3.0.1",
         "express": "^4.17.1",
-        "jsonwebtoken": "^8.5.1",
+        "jsonwebtoken": "^9.0.0",
         "mongoose": "^5.6.11",
         "nodemon": "^1.19.1"
     }
